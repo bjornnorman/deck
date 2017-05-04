@@ -115,11 +115,12 @@ class BoardService {
 		return $this->boardMapper->delete($this->find($id));
 	}
 
-	public function update($id, $title, $color) {
+	public function update($id, $title, $color, $archived) {
 		$this->permissionService->checkPermission($this->boardMapper, $id, Acl::PERMISSION_MANAGE);
 		$board = $this->find($id);
 		$board->setTitle($title);
 		$board->setColor($color);
+		$board->setArchived($archived);
 		$this->boardMapper->mapOwner($board);
 		return $this->boardMapper->update($board);
 	}

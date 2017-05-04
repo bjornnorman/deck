@@ -5,6 +5,7 @@
 			<td class="cell-board-bullet"></td>
 			<td class="cell-board-title" width="90%"><?php p($l->t('Board title')); ?></td>
 			<td class="cell-board-members"><?php p($l->t('Members')); ?></td>
+			<td></td>
 		</tr>
 		</thead>
 		<tbody>
@@ -21,8 +22,11 @@
 					<div class="avatardiv" avatar displayname="{{ acl.participant.uid }}" title="{{ acl.participant.uid }}" ng-repeat="acl in b.acl | limitTo: 7"></div>
 				</div>
 			</td>
+			<td>
+				<button class="icon icon-more"></button>
+			</td>
 		</tr>
-		<tr>
+		<tr ng-if="status.filter === ''">
 			<td><span class="icon icon-add"></span></td>
 			<td>
 				<a ng-click="status.addBoard=!status.addBoard"
@@ -44,6 +48,7 @@
 					<input type="submit" value="" class="icon-checkmark svg">
 				</form>
 			</td>
+			<td></td>
 			<td></td>
 		</tr>
 		</tbody>

@@ -21,10 +21,13 @@
  *  
  */
 
-app.controller('ListController', function ($scope, $location, $filter, BoardService, $element) {
+app.controller('ListController', function ($scope, $location, $filter, BoardService, $element, $stateParams) {
 	$scope.boards = [];
 	$scope.newBoard = {};
-	$scope.status = {};
+	$scope.status = {
+		filter: $stateParams.filter ? $stateParams.filter : '',
+		sidebar: false
+	};
 	$scope.colors = ['0082c9', '00c9c6','00c906', 'c92b00', 'F1DB50', '7C31CC', '3A3B3D', 'CACBCD'];
 	$scope.boardservice = BoardService;
 	$scope.newBoard.color = $scope.colors[0];
@@ -40,8 +43,27 @@ app.controller('ListController', function ($scope, $location, $filter, BoardServ
 
 	$scope.filterData = function () {
 		angular.copy($scope.boardservice.getData(), $scope.boardservice.sorted);
+		$scope.boardservice.sidebar = $filter('cardFilter')($scope.boardservice.sorted, {archived: false});
+		$scope.boardservice.sidebar = $filter('orderBy')($scope.boardservice.sidebar, 'title');
+
+		if ($scope.status.filter === 'archived') {
+			var filter = {};
+			filter[$scope.status.filter] = true;
+			$scope.boardservice.sorted = $filter('cardFilter')($scope.boardservice.sorted, filter);
+		} else if ($scope.status.filter === 'shared') {
+			$scope.boardservice.sorted = $filter('boardFilterAcl')($scope.boardservice.sorted);
+		} else {
+			$scope.boardservice.sorted = $filter('cardFilter')($scope.boardservice.sorted, {archived: false});
+		}
 		$scope.boardservice.sorted = $filter('orderBy')($scope.boardservice.sorted, 'title');
+		console.log($scope.boardservice.sorted);
 	};
+
+	$scope.$state = $stateParams;
+	$scope.$watch('$state.filter', function (name) {
+		$scope.status.filter = name;
+		$scope.filterData();
+	});
 
 	$scope.selectColor = function(color) {
 		$scope.newBoard.color = color;
@@ -68,6 +90,13 @@ app.controller('ListController', function ($scope, $location, $filter, BoardServ
 			$scope.filterData();
 		});
 		board.status.edit = false;
+	};
+
+	$scope.boardArchive = function (board) {
+		board.archived = true;
+		BoardService.update(board).then(function(data) {
+			$scope.filterData();
+		});
 	};
 
 	$scope.boardDelete = function(board) {

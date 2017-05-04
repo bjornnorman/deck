@@ -877,6 +877,10 @@ button:hover {
  * Custom icons
  */
 
+.icon-deck {
+	background-image: url(../img/deck.svg);
+}
+
 .icon-group {
 	background-image: url('../../../settings/img/users.svg');
 }
