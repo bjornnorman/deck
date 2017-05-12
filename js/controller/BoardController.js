@@ -71,6 +71,16 @@ app.controller('BoardController', function ($rootScope, $scope, $stateParams, St
 	$scope.stacks = {};
 	$scope.$watch('stacksData', function (value) {
 		$scope.refreshData();
+        setTimeout(function() {
+            let masonryEl = document.getElementById('innerBoard');
+            if (masonryEl) {
+                console.log("Attempting to update masonry layout");
+                let masonryObj = Masonry.data(masonryEl);
+                masonryObj.reloadItems();
+                masonryObj.layout();
+            } else {
+                console.log("Masonry instance not found");
+            }
 	}, true);
 	$scope.refreshData = function () {
 		if ($scope.filter === "archive") {
