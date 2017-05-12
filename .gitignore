@@ -4,3 +4,4 @@ build/
 js/public/
 tests/integration/vendor/
 tests/integration/composer.lock
+.idea
